@@ -17,6 +17,8 @@ build/
 build-*/
 CMakeCache.txt
 CMakeFiles/
+out/
+CMakeUserPresets.json
 
 # 备份
 _backup_*/
