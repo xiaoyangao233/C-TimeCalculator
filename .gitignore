@@ -1,0 +1,23 @@
+# Visual Studio
+.vs/
+x64/
+Debug/
+Release/
+*.obj
+*.pdb
+*.ilk
+*.idb
+*.ipch
+*.tlog
+*.log
+*.user
+
+#CMake
+build/
+build-*/
+CMakeCache.txt
+CMakeFiles/
+
+# 备份
+_backup_*/
+*.bak
