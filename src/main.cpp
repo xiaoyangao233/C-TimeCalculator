@@ -1,6 +1,7 @@
 ﻿#include<iostream>
 #include<string>
 #include<iomanip>
+#include <windows.h>
 using namespace std;
 #define MAX 1000
 
@@ -764,6 +765,8 @@ void showMenu()
 
 int main() {
 
+	SetConsoleOutputCP(CP_UTF8);   // 输出用 UTF-8
+	SetConsoleCP(CP_UTF8);         // 输入用 UTF-8（可选）
 
 	//创建合集结构体变量
 	VideoTotal vt;
