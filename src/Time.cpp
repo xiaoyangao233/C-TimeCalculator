@@ -1,5 +1,6 @@
 ﻿#include "Time.h"
 #include<stdexcept>
+#include<format>
 
 //含参构造函数，初始化
 Time::Time(int hour, int minute, int second) : m_Hour(0), m_Minute(0), m_Second(0)
@@ -38,30 +39,7 @@ Time::Time(int hour, int minute, int second) : m_Hour(0), m_Minute(0), m_Second(
 //显示时长信息函数
 std::string Time::toString() const
 {
-	std::string s;
-
-	//依次判断时分秒位数并加入到字符串后
-	if (this->m_Hour < 10)
-	{
-		s += '0';
-	}
-	s += std::to_string(m_Hour);
-	s += ':';
-
-	if (this->m_Minute < 10)
-	{
-		s += '0';
-	}
-	s += std::to_string(m_Minute);
-	s += ':';
-
-	if (this->m_Second < 10)
-	{
-		s += '0';
-	}
-	s += std::to_string(m_Second);
-
-	return s;
+	return std::format("{:02}:{:02}:{:02}", m_Hour, m_Minute, m_Second);
 }
 
 //单位化为秒函数	

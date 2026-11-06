@@ -9,7 +9,7 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 #定义一个exe目标
-add_executable(TimeCalculator src/main.cpp src/Time.cpp)
+add_executable(TimeCalculator src/main.cpp src/Time.cpp src/Date.cpp)
 
 #给目标加编译选项
 target_compile_options(TimeCalculator PRIVATE /utf-8)
