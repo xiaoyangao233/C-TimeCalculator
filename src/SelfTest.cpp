@@ -1,0 +1,90 @@
+﻿#include "SelfTest.h"
+#include<iostream>
+#include "VideoRecord.h"
+#include<stdexcept>
+
+namespace
+{
+	//检查小助手
+	void check(bool ok, const std::string& what)
+	{
+		std::cout << (ok ? "[通过] " : "[失败] ") << what << "\n";
+	}
+
+	//接收日期异常小助手
+	bool okDate(int year, int month, int day)
+	{
+		try 
+		{ 
+			Date probe(year, month, day);
+			return true;
+		}
+		catch (const std::invalid_argument&) 
+		{ 
+			return false; 
+		}
+	}
+
+	bool okTime(int hour, int minute, int second)
+	{
+		try
+		{
+			Time probe(hour, minute, second);
+			return true;
+		}
+		catch (const std::invalid_argument&)
+		{
+			return false;
+		}
+	}
+}
+
+//测试代码存放处
+void runSelfTest() 
+{
+
+	// Date 的几个关键边界（不用那张大表，抓重点就够）
+	check(okDate(2024, 2, 29), "2024 闰年 2 月 29");
+	check(okDate(1900, 2, 28), "1900 不是闰年，2 月只有 28 天");
+	check(!okDate(1900, 2, 29), "1900 年没有 2 月 29");
+	check(!okDate(2024, 4, 31), "4 月没有 31 号");
+	check(Date(2000, 1, 1).toDay() == 36524, "世纪锚点");
+	check(Date(2026, 11, 6).toDay() - Date(2026, 11, 5).toDay() == 1, "相邻两天差 1");
+
+	// Time
+	check(Time(1, 90, 30).toString() == "02:30:30", "Time 归一化");
+	check(Time(0, 0, 3661).toString() == "01:01:01", "Time 进位");
+	check(Time(2, 30, 30).toSeconds() + Time(0, 45, 45).toSeconds() == Time(3, 16, 15).toSeconds(), "秒数相加");
+	check(!okTime(-1, 0, 0), "Time 负值应该抛异常");
+	check(okTime(0, 90, 0), "Time 90 分钟能正常归一化");
+
+	// VideoRecord 测试
+	VideoRecord r("循环嵌套", 1, 2, 5, Time(0, 25, 30), Date(2026, 11, 6));
+
+	check(r.toString() == "5 | 循环嵌套 | 00:25:30 | 2026-11-06", "toString 格式");
+	check(r.getTime().toSeconds() == 1530, "getTime");
+	check(r.isIn(1, 2) == true, "isIn 命中");
+	check(r.isIn(1, 3) == false, "isIn 不命中");
+	check(r.isAt(1, 2, 5) == true, "isAt 命中");
+	check(r.isAt(1, 2, 6) == false, "isAt 不命中");
+
+	bool threw = false;
+	try { VideoRecord bad("", 1, 2, 5, Time(0, 0, 30), Date(2026, 11, 6)); }
+	catch (const std::invalid_argument&) { threw = true; }
+	check(threw, "空名字应该抛异常");
+
+	threw = false;
+	try { VideoRecord bad("你好", 0, 2, 5, Time(0, 0, 30), Date(2026, 11, 6)); }
+	catch (const std::invalid_argument&) { threw = true; }
+	check(threw, "合集号0应该抛异常");
+
+	threw = false;
+	try { VideoRecord bad("你好", 1, 0, 5, Time(0, 0, 30), Date(2026, 11, 6)); }
+	catch (const std::invalid_argument&) { threw = true; }
+	check(threw, "部分号0应该抛异常");
+
+	threw = false;
+	try { VideoRecord bad("你好", 1, 2, 0, Time(0, 0, 30), Date(2026, 11, 6)); }
+	catch (const std::invalid_argument&) { threw = true; }
+	check(threw, "序号0应该抛异常");
+}

@@ -2,6 +2,7 @@
 #include<string>
 #include<iomanip>
 #include <windows.h>
+#include"SelfTest.h"
 using namespace std;
 #define MAX 1000
 
@@ -767,6 +768,8 @@ int main() {
 
 	SetConsoleOutputCP(CP_UTF8);   // 输出用 UTF-8
 	SetConsoleCP(CP_UTF8);         // 输入用 UTF-8（可选）
+
+	runSelfTest();
 
 	//创建合集结构体变量
 	VideoTotal vt;
