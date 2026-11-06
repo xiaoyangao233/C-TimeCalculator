@@ -39,3 +39,19 @@ bool VideoRecord::isAt(int collectionId, int partId, int serialId) const
 {
 	return (m_CollectionId == collectionId && m_PartId == partId && m_SerialId == serialId);
 }
+
+//获取属性
+int VideoRecord::getCollectionId() const
+{
+	return this->m_CollectionId;
+}
+
+int VideoRecord::getPartId() const
+{
+	return this->m_PartId;
+}
+
+int VideoRecord::getSerialId() const
+{
+	return this->m_SerialId;
+}

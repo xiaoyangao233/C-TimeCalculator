@@ -2,6 +2,7 @@
 #include<iostream>
 #include "VideoRecord.h"
 #include<stdexcept>
+#include"VideoStore.h"
 
 namespace
 {
@@ -87,4 +88,41 @@ void runSelfTest()
 	try { VideoRecord bad("你好", 1, 2, 0, Time(0, 0, 30), Date(2026, 11, 6)); }
 	catch (const std::invalid_argument&) { threw = true; }
 	check(threw, "序号0应该抛异常");
+
+	// ---VideoStore测试---
+
+	// ===== 增删改 =====
+	{
+		VideoStore s;
+		VideoRecord r1("循环嵌套", 1, 2, 5, Time(0, 25, 30), Date(2026, 11, 6));
+		check(s.add(r1), "首次添加成功");
+		check(!s.add(r1), "重复添加失败");
+		check(s.all().size() == 1, "重复添加没真的加进去");
+
+		check(s.modify(1, 2, 5, VideoRecord("改名", 1, 2, 5, Time(0, 30, 0), Date(2026, 11, 6))),
+			"改自己编号能成功");
+		check(s.all().size() == 1, "modify 没增加条数");
+
+		check(s.find(1, 2, 5) != nullptr, "find 找得到");
+		check(s.find(1, 2, 9) == nullptr, "find 找不到返回 nullptr");
+
+		s.add(VideoRecord("指针", 1, 2, 6, Time(1, 10, 0), Date(2026, 11, 7)));
+		check(!s.modify(1, 2, 5, VideoRecord("撞号", 1, 2, 6, Time(0, 1, 0), Date(2026, 11, 6))),
+			"撞别人的编号要失败");
+		check(s.all().size() == 2, "撞号失败后条数没变");
+		check(!s.remove(1, 2, 99), "删不存在的返回 false");
+	}
+
+	// ===== 统计（全新容器，没被前面的操作碰过）=====
+	{
+		VideoStore s;
+		s.add(VideoRecord("循环嵌套", 1, 2, 5, Time(0, 25, 30), Date(2026, 11, 6)));
+		s.add(VideoRecord("指针", 1, 2, 6, Time(1, 10, 0), Date(2026, 11, 7)));
+		s.add(VideoRecord("别的课", 2, 1, 1, Time(0, 10, 0), Date(2026, 11, 8)));
+
+		check(s.totalTimeOfPart(1, 2).toSeconds() == 5730, "部分总时长 1:35:30");
+		check(s.totalTimeOfCollection(1).toSeconds() == 5730, "合集 1 总时长");
+		check(s.totalTimeOfCollection(2).toSeconds() == 600, "合集 2 总时长");
+		check(s.totalTimeOfPart(1, 9).toSeconds() == 0, "空部分返回 0");
+	}
 }

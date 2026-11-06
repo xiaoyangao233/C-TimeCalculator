@@ -15,6 +15,7 @@ add_executable(TimeCalculator
 	src/Date.cpp
 	src/VideoRecord.cpp
 	src/SelfTest.cpp
+	src/VideoStore.cpp
 )
 
 #给目标加编译选项

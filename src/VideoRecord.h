@@ -22,6 +22,11 @@ public:
 	//判断编号组合是否是该对象有的
 	bool isAt(int collectionId, int partId, int serialId) const;
 
+	//获取属性
+	int getCollectionId() const;
+	int getPartId() const;
+	int getSerialId() const;
+
 private:
 	std::string m_Name; //存视频的名字
 	int m_CollectionId; //存所属合集的编号
