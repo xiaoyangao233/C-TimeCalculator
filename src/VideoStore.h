@@ -29,10 +29,17 @@ public:
     Time totalTimeOfPart(int collectionId, int partId) const;
     Time totalTimeOfCollection(int collectionId) const;
 
+    //清空所有信息
+    void clear();
+
+    //计算所有视频总时长
+    Time totalTimeAll() const;
+
 private:
     // 按编号定位，返回下标；找不到返回 -1。
     // 所有增删改查都经由它，保证"什么算同一条记录"只有一处定义
     int indexOf(int collectionId, int partId, int serialId) const;
 
     std::vector<VideoRecord> m_Records;
+
 };

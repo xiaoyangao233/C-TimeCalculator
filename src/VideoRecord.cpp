@@ -28,6 +28,11 @@ Time VideoRecord::getTime() const
 	return m_Time;
 }
 
+Date VideoRecord::getDate() const
+{
+	return m_Date;
+}
+
 //判断该对象是否位于某部分
 bool VideoRecord::isIn(int collectionId, int partId) const
 {
@@ -41,6 +46,11 @@ bool VideoRecord::isAt(int collectionId, int partId, int serialId) const
 }
 
 //获取属性
+std::string VideoRecord::getName() const
+{
+	return this->m_Name;
+}
+
 int VideoRecord::getCollectionId() const
 {
 	return this->m_CollectionId;

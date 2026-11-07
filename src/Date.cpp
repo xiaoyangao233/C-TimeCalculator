@@ -29,15 +29,15 @@ Date::Date(int year, int month, int day)
 {
 	if (year < 1900)
 	{
-		throw std::invalid_argument("年不得早于1900！");
+		throw std::invalid_argument("Date：年不得早于1900！");
 	}
 	if (month < 1 || month > 12)
 	{
-		throw std::invalid_argument("月份不得为负或大于十二！");
+		throw std::invalid_argument("Date：月份不得为负或大于十二！");
 	}
 	if (day < 1 || day > dayInMonth(year,month))
 	{
-		throw std::invalid_argument("日期不得为负或大于该月日期！");
+		throw std::invalid_argument("Date：日期不得为负或大于该月日期！");
 	}
 
 	this->m_Year = year;

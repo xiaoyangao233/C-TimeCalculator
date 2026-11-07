@@ -13,8 +13,9 @@ public:
 	//打印函数
 	std::string toString() const;
 
-	//返回时长
+	//返回时长和日期
 	Time getTime() const;
+	Date getDate() const;
 
 	//判断该对象是否位于某部分
 	bool isIn(int collectionId, int partId) const;
@@ -23,6 +24,7 @@ public:
 	bool isAt(int collectionId, int partId, int serialId) const;
 
 	//获取属性
+	std::string getName() const;
 	int getCollectionId() const;
 	int getPartId() const;
 	int getSerialId() const;

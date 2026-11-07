@@ -70,8 +70,23 @@ Time VideoStore::totalTimeOfCollection(int collectionId) const
 	{
 		if (r.getCollectionId() == collectionId)
 		{
-			total = r.getTime() + total;
+			total = total + r.getTime();
 		}
+	}
+	return total;
+}
+
+void VideoStore::clear()
+{
+	m_Records.clear();
+}
+
+Time VideoStore::totalTimeAll() const
+{
+	Time total(0, 0, 0);
+	for (const auto& r : m_Records)
+	{
+		total = total + r.getTime();
 	}
 	return total;
 }
