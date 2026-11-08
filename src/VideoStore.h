@@ -35,6 +35,13 @@ public:
     //计算所有视频总时长
     Time totalTimeAll() const;
 
+    // ===== 文件 =====
+    // 从文件加载记录。成功返回 true。文件不存在或内容损坏返回 false。
+    bool loadFrom(const std::string& path);
+
+    // 把全部记录写入文件。成功返回 true。
+    bool saveTo(const std::string& path) const;
+
 private:
     // 按编号定位，返回下标；找不到返回 -1。
     // 所有增删改查都经由它，保证"什么算同一条记录"只有一处定义

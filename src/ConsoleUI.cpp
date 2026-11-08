@@ -2,6 +2,11 @@
 #include <iostream>
 #include <cstdlib>
 
+namespace
+{
+	const std::string DATA_FILE = "videos.txt";
+}
+
 ConsoleUI::ConsoleUI() : m_PlannedTime(0, 0, 0)
 {
 	
@@ -21,6 +26,9 @@ std::string ConsoleUI::partName(int id) const
 
 void ConsoleUI::run()
 {
+	if (!m_Store.loadFrom(DATA_FILE))
+		std::cout << "（没有找到存档，按空库启动）\n";
+
 	while (true)
 	{
 		showMenu();
@@ -68,7 +76,7 @@ int  ConsoleUI::readChoice() const
 
 void ConsoleUI::addRecord()
 {
-	std::string name,line;
+	std::string name;
 	int collectionId = 0, partId = 0, serialId = 0;
 	int year = 0, month = 0, day = 0;
 	int hour = 0, minute = 0, second = 0;
@@ -84,8 +92,14 @@ void ConsoleUI::addRecord()
 	}
 	while (true)
 	{
-		std::cin >> collectionId;
-		if (m_collections.count(collectionId) > 0)   // count 返回 0 或 1
+		if (!(std::cin >> collectionId))
+		{
+			std::cin.clear();
+			std::cin.ignore(1000, '\n');
+			std::cout << "请输入数字：";
+			continue;
+		}
+		if (m_collections.count(collectionId) > 0)
 			break;
 		std::cout << "没有这个合集编号，请重新输入：";
 	}
@@ -97,10 +111,16 @@ void ConsoleUI::addRecord()
 	}
 	while (true)
 	{
-		std::cin >> partId;
-		if (m_parts.count(partId) > 0)   // count 返回 0 或 1
+		if (!(std::cin >> partId))
+		{
+			std::cin.clear();
+			std::cin.ignore(1000, '\n');
+			std::cout << "请输入数字：";
+			continue;
+		}
+		if (m_parts.count(partId) > 0)
 			break;
-		std::cout << "没有这个合集编号，请重新输入：";
+		std::cout << "没有这个部分编号，请重新输入：";
 	}
 
 	std::cout << "请输入本视频序号：" << std::endl;
@@ -130,6 +150,8 @@ void ConsoleUI::addRecord()
 	{
 		std::cout << "输入不合法：" << e.what() << "\n";
 	}
+
+	m_Store.saveTo(DATA_FILE);
 
 	//任意键清屏
 	system("pause");

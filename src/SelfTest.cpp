@@ -125,4 +125,18 @@ void runSelfTest()
 		check(s.totalTimeOfCollection(2).toSeconds() == 600, "合集 2 总时长");
 		check(s.totalTimeOfPart(1, 9).toSeconds() == 0, "空部分返回 0");
 	}
+
+	// --- 文件存取 ---
+	VideoStore a;
+	a.add(VideoRecord("循环 嵌套", 1, 2, 5, Time(0, 25, 30), Date(2026, 11, 6)));
+	a.add(VideoRecord("循环 实战", 1, 2, 6, Time(0, 25, 30), Date(2026, 11, 6)));
+	a.saveTo("selftest_tmp.txt");
+
+	VideoStore b;
+	check(b.loadFrom("selftest_tmp.txt"), "加载成功");
+	check(b.all().size() == 2, "条数一致");
+	check(b.all()[0].getName() == "循环 嵌套", "带空格的名字没被截断");
+	check(b.all()[0].getTime().toSeconds() == 1530, "时长一致");
+	check(b.find(1, 2, 5) != nullptr, "编号一致");
+	check(b.find(1, 2, 6) != nullptr, "编号一致");
 }
