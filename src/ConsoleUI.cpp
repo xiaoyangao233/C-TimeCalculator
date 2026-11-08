@@ -12,18 +12,21 @@ ConsoleUI::ConsoleUI() : m_PlannedTime(0, 0, 0)
 	
 }
 
+// === 查找合集ID ===
 std::string ConsoleUI::collName(int id) const
 {
 	auto it = m_collections.find(id);
 	return it != m_collections.end() ? it->second : "未知合集";
 }
 
+// === 查找部分ID ===
 std::string ConsoleUI::partName(int id) const
 {
 	auto it = m_parts.find(id);
 	return it != m_parts.end() ? it->second : "未知部分";
 }
 
+// === 输入校验 ===
 int ConsoleUI::readInt() const
 {
 	int value = 0;
@@ -62,7 +65,7 @@ int ConsoleUI::readPartId() const
 	}
 }
 
-
+// === UI运行函数 ===
 void ConsoleUI::run()
 {
 	if (!m_Store.loadFrom(DATA_FILE))
@@ -77,6 +80,7 @@ void ConsoleUI::run()
 		case 2: addRecord(); break;
 		case 3: showAll();   break;
 		case 4: removeRecord(); break;
+		case 6:	modifyRecord(); break;
 		case 0: return;
 		default:
 			std::cout << "还没有接上这个功能\n";
@@ -85,6 +89,8 @@ void ConsoleUI::run()
 	}
 }
 
+// === 功能实现 ===
+// --- 展示界面 ---
 void ConsoleUI::showMenu() const
 {
 	std::cout << "*******************************************" << std::endl;
@@ -114,6 +120,7 @@ int  ConsoleUI::readChoice() const
 	return choice;
 }
 
+// --- 添加视频记录功能 ---
 void ConsoleUI::addRecord()
 {
 	std::string name;
@@ -170,6 +177,7 @@ void ConsoleUI::addRecord()
 	system("cls");
 }
 
+// --- 展示所有信息功能 ---
 void ConsoleUI::showAll() const
 {
 	std::cout << "合集 | 部分 | 序号 | 名字 | 时长 | 日期\n";
@@ -191,6 +199,7 @@ void ConsoleUI::showAll() const
 	system("cls");
 }
 
+// --- 删除记录功能 ---
 void ConsoleUI::removeRecord()
 {
 	std::cout << "请输入所属集合编号：" << std::endl;
@@ -213,6 +222,82 @@ void ConsoleUI::removeRecord()
 	else
 	{
 		std::cout << "已成功删除本视频！" << std::endl;
+	}
+
+	m_Store.saveTo(DATA_FILE);
+
+	system("pause");
+	system("cls");
+}
+
+// --- 修改记录功能 ---
+void ConsoleUI::modifyRecord()
+{
+	std::cout << "请输入所属集合编号：" << std::endl;
+	for (const auto& [id, collname] : m_collections)
+		std::cout << id << " --- " << collname << std::endl;
+	int collectionId = readCollectionId();
+
+	std::cout << "请输入部分编号：" << std::endl;
+	for (const auto& [id, partname] : m_parts)
+		std::cout << id << " --- " << partname << std::endl;
+	int partId = readPartId();
+
+	std::cout << "请输入视频序号： " << std::endl;
+	int serialId = readInt();
+
+	const VideoRecord* p = m_Store.find(collectionId, partId, serialId);
+	if (p == nullptr)
+	{
+		std::cout << "没有这条记录\n";
+		system("pause"); system("cls");
+		return;
+	}
+	std::cout << "当前记录：" << p->toString() << "\n";
+
+	std::cout << "请输入新的视频名称：\n";
+	std::string name;
+	std::getline(std::cin >> std::ws, name);
+
+	std::cout << "请输入新的合集编号：\n";
+	for (const auto& [id, collname] : m_collections)
+		std::cout << id << " --- " << collname << std::endl;
+	int newC = readCollectionId();
+
+	std::cout << "请输入新的部分编号：\n";
+	for (const auto& [id, partname] : m_parts)
+		std::cout << id << " --- " << partname << std::endl;
+	int newP = readPartId();
+
+	std::cout << "请输入新的视频序号：\n";
+	int newS = readInt();
+
+	std::cout << "请输入新的视频时长\n  时：";
+	int hour = readInt();
+	std::cout << "  分：";
+	int minute = readInt();
+	std::cout << "  秒：";
+	int second = readInt();
+
+	std::cout << "请输入新的学习日期\n  年：";
+	int year = readInt();
+	std::cout << "  月：";
+	int month = readInt();
+	std::cout << "  日：";
+	int day = readInt();
+
+	try
+	{
+		VideoRecord r(name, newC, newP, newS, Time(hour, minute, second), Date(year, month, day));
+
+		if (m_Store.modify(collectionId, partId, serialId, r))
+			std::cout << "修改成功！\n";
+		else
+			std::cout << "新编号和已有记录冲突，未修改\n";
+	}
+	catch (const std::invalid_argument& e)
+	{
+		std::cout << "输入不合法：" << e.what() << "\n";
 	}
 
 	m_Store.saveTo(DATA_FILE);

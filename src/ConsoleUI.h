@@ -17,6 +17,7 @@ private:
 	void addRecord();
 	void showAll() const;
     void removeRecord();
+    void modifyRecord();
 
 	VideoStore m_Store;
 	Time m_PlannedTime;
