@@ -16,9 +16,14 @@ private:
 
 	void addRecord();
 	void showAll() const;
+    void removeRecord();
 
 	VideoStore m_Store;
 	Time m_PlannedTime;
+
+    int readInt() const;   // 保证返回一个数字
+    int readCollectionId() const;                   // 保证是菜单里有的合集
+    int readPartId() const;                         // 保证是菜单里有的部分
 
     //临时存放一下第一个合集
     std::map<int, std::string> m_parts =

@@ -24,6 +24,45 @@ std::string ConsoleUI::partName(int id) const
 	return it != m_parts.end() ? it->second : "未知部分";
 }
 
+int ConsoleUI::readInt() const
+{
+	int value = 0;
+	while (true)
+	{
+		if (std::cin >> value)
+		{
+			std::cin.ignore(1000, '\n');   // ← 成功时也把这一行清干净
+			return value;
+		}
+		std::cin.clear();
+		std::cin.ignore(1000, '\n');
+		std::cout << "请输入数字：\n";
+	}
+}
+
+int ConsoleUI::readCollectionId() const
+{
+	while (true)
+	{
+		int id = readInt();
+		if (m_collections.count(id) > 0)
+			return id;
+		std::cout << "没有这个合集编号，请重新输入：\n";
+	}
+}
+
+int ConsoleUI::readPartId() const
+{
+	while (true)
+	{
+		int id = readInt();
+		if (m_parts.count(id) > 0)
+			return id;
+		std::cout << "没有这个部分编号，请重新输入：\n";
+	}
+}
+
+
 void ConsoleUI::run()
 {
 	if (!m_Store.loadFrom(DATA_FILE))
@@ -37,6 +76,7 @@ void ConsoleUI::run()
 		{
 		case 2: addRecord(); break;
 		case 3: showAll();   break;
+		case 4: removeRecord(); break;
 		case 0: return;
 		default:
 			std::cout << "还没有接上这个功能\n";
@@ -77,9 +117,6 @@ int  ConsoleUI::readChoice() const
 void ConsoleUI::addRecord()
 {
 	std::string name;
-	int collectionId = 0, partId = 0, serialId = 0;
-	int year = 0, month = 0, day = 0;
-	int hour = 0, minute = 0, second = 0;
 
 	std::cout << "请输入视频相关信息：" << std::endl;
 	std::cout << "请输入视频名称：" << std::endl;
@@ -87,51 +124,26 @@ void ConsoleUI::addRecord()
 	
 	std::cout << "请输入所属集合编号：" << std::endl;
 	for (const auto& [id, collname] : m_collections)
-	{
 		std::cout << id << " --- " << collname << std::endl;
-	}
-	while (true)
-	{
-		if (!(std::cin >> collectionId))
-		{
-			std::cin.clear();
-			std::cin.ignore(1000, '\n');
-			std::cout << "请输入数字：";
-			continue;
-		}
-		if (m_collections.count(collectionId) > 0)
-			break;
-		std::cout << "没有这个合集编号，请重新输入：";
-	}
+	int collectionId = readCollectionId();
 
 	std::cout << "请输入部分编号：" << std::endl;
 	for (const auto& [id, partname] : m_parts)
-	{
 		std::cout << id << " --- " << partname << std::endl;
-	}
-	while (true)
-	{
-		if (!(std::cin >> partId))
-		{
-			std::cin.clear();
-			std::cin.ignore(1000, '\n');
-			std::cout << "请输入数字：";
-			continue;
-		}
-		if (m_parts.count(partId) > 0)
-			break;
-		std::cout << "没有这个部分编号，请重新输入：";
-	}
+	int partId = readPartId();
 
-	std::cout << "请输入本视频序号：" << std::endl;
-	std::cin >> serialId;
+	std::cout << "请输入视频序号： " << std::endl;
+	int serialId = readInt();
 
+	std::cout << "请输入视频时长\n";
+	std::cout << "  时：";  int hour = readInt();
+	std::cout << "  分：";  int minute = readInt();
+	std::cout << "  秒：";  int second = readInt();
 
-	std::cout << "请输入视频时长：" << std::endl;
-	std::cin >> hour >> minute >> second;
-
-	std::cout << "请输入学习日期：" << std::endl;
-	std::cin >> year >> month >> day;
+	std::cout << "请输入学习日期\n";
+	std::cout << "  年：";  int year = readInt();
+	std::cout << "  月：";  int month = readInt();
+	std::cout << "  日：";  int day = readInt();
 
 	try
 	{
@@ -174,6 +186,36 @@ void ConsoleUI::showAll() const
 	}
 
 	std::cout << "共有" << records.size() << "条数据。\n";
+
+	system("pause");
+	system("cls");
+}
+
+void ConsoleUI::removeRecord()
+{
+	std::cout << "请输入所属集合编号：" << std::endl;
+	for (const auto& [id, collname] : m_collections)
+		std::cout << id << " --- " << collname << std::endl;
+	int collectionId = readCollectionId();
+
+	std::cout << "请输入部分编号：" << std::endl;
+	for (const auto& [id, partname] : m_parts)
+		std::cout << id << " --- " << partname << std::endl;
+	int partId = readPartId();
+
+	std::cout << "请输入视频序号： " << std::endl;
+	int serialId = readInt();
+
+	if (!m_Store.remove(collectionId, partId, serialId))
+	{
+		std::cout << "这条记录不存在！" << std::endl;
+	}
+	else
+	{
+		std::cout << "已成功删除本视频！" << std::endl;
+	}
+
+	m_Store.saveTo(DATA_FILE);
 
 	system("pause");
 	system("cls");
