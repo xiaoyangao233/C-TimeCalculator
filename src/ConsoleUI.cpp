@@ -231,6 +231,40 @@ void ConsoleUI::removeRecord()
 	system("cls");
 }
 
+// --- 查找记录功能 ---
+void ConsoleUI::findRecord()
+{
+
+	std::cout << "请输入所属集合编号：" << std::endl;
+	for (const auto& [id, collname] : m_collections)
+		std::cout << id << " --- " << collname << std::endl;
+	int c = readCollectionId();
+
+	std::cout << "请输入部分编号：" << std::endl;
+	for (const auto& [id, partname] : m_parts)
+		std::cout << id << " --- " << partname << std::endl;
+	int pid = readPartId();
+
+	std::cout << "请输入视频序号： " << std::endl;
+	int s = readInt();
+
+	const VideoRecord* p = m_Store.find(c, pid, s);
+
+	if (p == nullptr)
+	{
+		std::cout << "找不到这条记录\n";
+	}
+	else
+	{
+		std::cout << "名字：" << p->getName() << "\n"
+			<< "时长：" << p->getTime().toString() << "\n"
+			<< "日期：" << p->getDate().toString() << "\n";
+	}
+
+	system("pause");
+	system("cls");
+}
+
 // --- 修改记录功能 ---
 void ConsoleUI::modifyRecord()
 {
