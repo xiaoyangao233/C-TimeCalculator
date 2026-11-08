@@ -81,6 +81,7 @@ void ConsoleUI::run()
 		case 3: showAll();   break;
 		case 4: removeRecord(); break;
 		case 6:	modifyRecord(); break;
+		case 8: clearRecord(); break;
 		case 0: return;
 		default:
 			std::cout << "还没有接上这个功能\n";
@@ -301,6 +302,28 @@ void ConsoleUI::modifyRecord()
 	}
 
 	m_Store.saveTo(DATA_FILE);
+
+	system("pause");
+	system("cls");
+}
+
+// --- 删除所有记录 ---
+void ConsoleUI::clearRecord()
+{
+	std::cout << "你真的要删除所有数据吗，此操作不可撤回！\n";
+	std::cout << "1 --- 删除  |  其余 --- 不删除\n";
+
+	if (readInt() != 1)
+	{
+		std::cout << "已取消\n";
+		system("pause");
+		system("cls");
+		return;                      // ← 提前退出，后面不用再判断
+	}
+
+	m_Store.clear();
+	m_Store.saveTo(DATA_FILE);
+	std::cout << "已清空所有记录\n";
 
 	system("pause");
 	system("cls");
