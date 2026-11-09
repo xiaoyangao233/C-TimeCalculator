@@ -232,7 +232,7 @@ void ConsoleUI::removeRecord()
 }
 
 // --- 查找记录功能 ---
-void ConsoleUI::findRecord()
+void ConsoleUI::findRecord() const
 {
 
 	std::cout << "请输入所属集合编号：" << std::endl;

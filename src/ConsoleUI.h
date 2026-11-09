@@ -17,7 +17,7 @@ private:
 	void addRecord();
 	void showAll() const;
     void removeRecord();
-    void findRecord();
+    void findRecord() const;
     void modifyRecord();
     void clearRecord();
 
